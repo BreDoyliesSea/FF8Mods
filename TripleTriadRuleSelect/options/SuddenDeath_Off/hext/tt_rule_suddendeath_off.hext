@@ -1,0 +1,6 @@
+Triple Triad Rule Select - Sudden Death always off
+# slot 4: Sudden Death forced off
+00B68E1C=80 25 A8 D7 DC 01 EF
+
+# re-mark written ranges as executable (see ff8hext.py)
+00B68E1C:7

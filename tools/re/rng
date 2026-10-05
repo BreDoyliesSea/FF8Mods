@@ -1,0 +1,5 @@
+#!/bin/sh
+# usage: ./rng START END  (hex)
+cd "$(dirname "$0")"
+s=$(printf "%d" $1); e=$(printf "%d" $2)
+gawk -v s=$s -v e=$e -F: '{a=strtonum("0x"$1)} a>=s && a<e' text.asm

@@ -1,0 +1,6 @@
+Triple Triad Rule Select - Open always on
+# slot 0: Open forced on
+00B68E00=80 0D A8 D7 DC 01 01
+
+# re-mark written ranges as executable (see ff8hext.py)
+00B68E00:7

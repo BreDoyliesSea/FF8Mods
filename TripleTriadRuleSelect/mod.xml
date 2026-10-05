@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModInfo>
+  <ID>4f1c2d9a-7b3e-4c51-9a8e-2d6f0b1e7a01</ID>
+  <Name>Triple Triad Rule Select</Name>
+  <Author>FF8Mods</Author>
+  <Version>1.0</Version>
+  <Description>Pick the Triple Triad rules yourself. Each rule (Open, Same, Plus, Random, Sudden Death, Same Wall, Elemental) can be forced on, forced off, or left to the region's own rules. You can also force the trade rule. Settings apply to every card game in every region. Requires the Steam 2013 English FF8_EN.exe.</Description>
+  <ReleaseNotes>Initial release.</ReleaseNotes>
+  <ReleaseDate>2026-10-04</ReleaseDate>
+  <Category>Minigames</Category>
+  <Link></Link>
+  <DonationLink />
+  <GameLanguage>EN</GameLanguage>
+
+  <ConfigOption>
+    <Name>=== Card rules</Name>
+    <ID>HeaderRules</ID>
+    <Type>Bool</Type>
+    <Default>0</Default>
+    <Description>Choose each rule's behaviour. Region default keeps the game's normal rules (including rule spreading).</Description>
+  </ConfigOption>
+  <ConfigOption>
+    <Name>Open</Name>
+    <ID>RuleOpen</ID>
+    <Type>List</Type>
+    <Default>0</Default>
+    <Description>Both hands are visible to both players.</Description>
+    <Option Value="0" Name="Region default" />
+    <Option Value="1" Name="Always on" />
+    <Option Value="2" Name="Always off" />
+  </ConfigOption>
+  <ConfigOption>
+    <Name>Same</Name>
+    <ID>RuleSame</ID>
+    <Type>List</Type>
+    <Default>0</Default>
+    <Description>Flip neighbours when two or more touching sides are equal.</Description>
+    <Option Value="0" Name="Region default" />
+    <Option Value="1" Name="Always on" />
+    <Option Value="2" Name="Always off" />
+  </ConfigOption>
+  <ConfigOption>
+    <Name>Plus</Name>
+    <ID>RulePlus</ID>
+    <Type>List</Type>
+    <Default>0</Default>
+    <Description>Flip neighbours when two or more touching sides add up to the same sum.</Description>
+    <Option Value="0" Name="Region default" />
+    <Option Value="1" Name="Always on" />
+    <Option Value="2" Name="Always off" />
+  </ConfigOption>
+  <ConfigOption>
+    <Name>Random</Name>
+    <ID>RuleRandom</ID>
+    <Type>List</Type>
+    <Default>0</Default>
+    <Description>Your five cards are picked at random from your collection.</Description>
+    <Option Value="0" Name="Region default" />
+    <Option Value="1" Name="Always on" />
+    <Option Value="2" Name="Always off" />
+  </ConfigOption>
+  <ConfigOption>
+    <Name>Sudden Death</Name>
+    <ID>RuleSuddenDeath</ID>
+    <Type>List</Type>
+    <Default>0</Default>
+    <Description>A draw restarts the match with the cards each player owns on the board.</Description>
+    <Option Value="0" Name="Region default" />
+    <Option Value="1" Name="Always on" />
+    <Option Value="2" Name="Always off" />
+  </ConfigOption>
+  <ConfigOption>
+    <Name>Same Wall</Name>
+    <ID>RuleSameWall</ID>
+    <Type>List</Type>
+    <Default>0</Default>
+    <Description>The board edges count as A for Same (only matters when Same is also on).</Description>
+    <Option Value="0" Name="Region default" />
+    <Option Value="1" Name="Always on" />
+    <Option Value="2" Name="Always off" />
+  </ConfigOption>
+  <ConfigOption>
+    <Name>Elemental</Name>
+    <ID>RuleElemental</ID>
+    <Type>List</Type>
+    <Default>0</Default>
+    <Description>Elemental squares raise or lower card ranks.</Description>
+    <Option Value="0" Name="Region default" />
+    <Option Value="1" Name="Always on" />
+    <Option Value="2" Name="Always off" />
+  </ConfigOption>
+  <ConfigOption>
+    <Name>Trade rule</Name>
+    <ID>TradeRule</ID>
+    <Type>List</Type>
+    <Default>0</Default>
+    <Description>Which cards change hands after a match.</Description>
+    <Option Value="0" Name="Region default" />
+    <Option Value="1" Name="One" />
+    <Option Value="2" Name="Diff" />
+    <Option Value="3" Name="Direct" />
+    <Option Value="4" Name="All" />
+    <Option Value="5" Name="None (no cards change hands)" />
+  </ConfigOption>
+
+  <ModFolder Folder="options\Open_On">
+    <ActiveWhen>
+      <Option>RuleOpen=1</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Open_Off">
+    <ActiveWhen>
+      <Option>RuleOpen=2</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Same_On">
+    <ActiveWhen>
+      <Option>RuleSame=1</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Same_Off">
+    <ActiveWhen>
+      <Option>RuleSame=2</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Plus_On">
+    <ActiveWhen>
+      <Option>RulePlus=1</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Plus_Off">
+    <ActiveWhen>
+      <Option>RulePlus=2</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Random_On">
+    <ActiveWhen>
+      <Option>RuleRandom=1</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Random_Off">
+    <ActiveWhen>
+      <Option>RuleRandom=2</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\SuddenDeath_On">
+    <ActiveWhen>
+      <Option>RuleSuddenDeath=1</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\SuddenDeath_Off">
+    <ActiveWhen>
+      <Option>RuleSuddenDeath=2</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\SameWall_On">
+    <ActiveWhen>
+      <Option>RuleSameWall=1</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\SameWall_Off">
+    <ActiveWhen>
+      <Option>RuleSameWall=2</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Elemental_On">
+    <ActiveWhen>
+      <Option>RuleElemental=1</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Elemental_Off">
+    <ActiveWhen>
+      <Option>RuleElemental=2</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Trade_One">
+    <ActiveWhen>
+      <Option>TradeRule=1</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Trade_Diff">
+    <ActiveWhen>
+      <Option>TradeRule=2</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Trade_Direct">
+    <ActiveWhen>
+      <Option>TradeRule=3</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Trade_All">
+    <ActiveWhen>
+      <Option>TradeRule=4</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\Trade_None">
+    <ActiveWhen>
+      <Option>TradeRule=5</Option>
+    </ActiveWhen>
+  </ModFolder>
+</ModInfo>

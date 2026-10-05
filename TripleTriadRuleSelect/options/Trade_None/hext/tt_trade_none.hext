@@ -1,0 +1,6 @@
+Triple Triad Rule Select - trade rule None (no cards change hands)
+# slot 7: trade rule forced to 0 (None (no cards change hands))
+00B68E31=C6 05 AC D7 DC 01 00
+
+# re-mark written ranges as executable (see ff8hext.py)
+00B68E31:7

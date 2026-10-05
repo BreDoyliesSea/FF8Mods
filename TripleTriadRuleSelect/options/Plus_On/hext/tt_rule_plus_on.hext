@@ -1,0 +1,6 @@
+Triple Triad Rule Select - Plus always on
+# slot 2: Plus forced on
+00B68E0E=80 0D A8 D7 DC 01 04
+
+# re-mark written ranges as executable (see ff8hext.py)
+00B68E0E:7

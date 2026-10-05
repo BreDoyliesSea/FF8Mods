@@ -1,0 +1,8 @@
+# Python virtualenv and caches
+.venv/
+__pycache__/
+*.pyc
+
+# Generated analysis artifacts
+tools/re/reach.pkl
+tools/re/fdump/

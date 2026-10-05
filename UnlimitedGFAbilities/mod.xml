@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModInfo>
+  <ID>9b7e3c21-5d4a-4f0e-8c6b-1a2f3e4d5c02</ID>
+  <Name>Unlimited GF Abilities</Name>
+  <Author>FF8Mods</Author>
+  <Version>1.0</Version>
+  <Description>Removes the 22-ability limit per GF. GFs can learn every ability they are taught, and the GF menu, the item teach/forget list and the junction GF info popup page through all of them (Left/Right). Requires the Steam 2013 English FF8_EN.exe.</Description>
+  <ReleaseNotes>Initial release.</ReleaseNotes>
+  <ReleaseDate>2026-10-04</ReleaseDate>
+  <Category>Gameplay</Category>
+  <Link></Link>
+  <DonationLink />
+  <GameLanguage>EN</GameLanguage>
+</ModInfo>

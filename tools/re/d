@@ -1,0 +1,4 @@
+#!/bin/sh
+# usage: ./d <python expr evaluated with q.py namespace>
+cd "$(dirname "$0")" && python3 -c "from q import *
+$1" 2>&1 | grep -v "frozen site"

@@ -1,0 +1,6 @@
+Triple Triad Rule Select - Same Wall always off
+# slot 5: Same Wall forced off
+00B68E23=80 25 A8 D7 DC 01 BF
+
+# re-mark written ranges as executable (see ff8hext.py)
+00B68E23:7

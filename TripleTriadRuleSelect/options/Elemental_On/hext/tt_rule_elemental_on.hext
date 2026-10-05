@@ -1,0 +1,6 @@
+Triple Triad Rule Select - Elemental always on
+# slot 6: Elemental forced on
+00B68E2A=80 0D A8 D7 DC 01 80
+
+# re-mark written ranges as executable (see ff8hext.py)
+00B68E2A:7

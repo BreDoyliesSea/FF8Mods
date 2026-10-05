@@ -1,0 +1,6 @@
+Triple Triad Rule Select - trade rule Diff
+# slot 7: trade rule forced to 2 (Diff)
+00B68E31=C6 05 AC D7 DC 01 02
+
+# re-mark written ranges as executable (see ff8hext.py)
+00B68E31:7

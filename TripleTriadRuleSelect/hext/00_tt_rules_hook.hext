@@ -1,0 +1,39 @@
+Triple Triad Rule Select - base hook (FF8 Steam 2013, FF8_EN.exe)
+# Target: FF8_EN.exe sha1 03230c11328f8a1f9635435096e1659d9bfd002d (Steam 2013, English).
+# Original bytes at 00522652: E8 59 23 01 00 (call 005349B0)
+
+# Make the code cave writable/executable
+00B68E00:3D
+# slot 0: Open (region default)
+00B68E00=90 90 90 90 90 90 90
+# slot 1: Same (region default)
+00B68E07=90 90 90 90 90 90 90
+# slot 2: Plus (region default)
+00B68E0E=90 90 90 90 90 90 90
+# slot 3: Random (region default)
+00B68E15=90 90 90 90 90 90 90
+# slot 4: Sudden Death (region default)
+00B68E1C=90 90 90 90 90 90 90
+# slot 5: Same Wall (region default)
+00B68E23=90 90 90 90 90 90 90
+# slot 6: Elemental (region default)
+00B68E2A=90 90 90 90 90 90 90
+# slot 7: trade rule (region default)
+00B68E31=90 90 90 90 90 90 90
+# continue to the original call target
+00B68E38=E9 73 BB 9C FF
+
+# CARDGAME opcode: call the cave instead of 005349B0
+00522652=E8 A9 67 64 00
+
+# re-mark written ranges as executable (see ff8hext.py)
+00B68E00:7
+00B68E07:7
+00B68E0E:7
+00B68E15:7
+00B68E1C:7
+00B68E23:7
+00B68E2A:7
+00B68E31:7
+00B68E38:5
+00522652:5

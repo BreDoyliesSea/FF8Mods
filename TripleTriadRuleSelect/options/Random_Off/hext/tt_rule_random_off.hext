@@ -1,0 +1,6 @@
+Triple Triad Rule Select - Random always off
+# slot 3: Random forced off
+00B68E15=80 25 A8 D7 DC 01 F7
+
+# re-mark written ranges as executable (see ff8hext.py)
+00B68E15:7

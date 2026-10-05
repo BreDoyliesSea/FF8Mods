@@ -1,0 +1,6 @@
+Triple Triad Rule Select - Same always off
+# slot 1: Same forced off
+00B68E07=80 25 A8 D7 DC 01 FD
+
+# re-mark written ranges as executable (see ff8hext.py)
+00B68E07:7
