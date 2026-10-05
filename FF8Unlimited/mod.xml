@@ -1,19 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModInfo>
-  <ID>4f1c2d9a-7b3e-4c51-9a8e-2d6f0b1e7a01</ID>
-  <Name>Triple Triad Rule Select</Name>
+  <ID>6ed51118-e60c-4087-8626-e9e9b6acd886</ID>
+  <Name>FF8 Unlimited</Name>
   <Author>BreDoyliesSea</Author>
-  <Version>1.0</Version>
-  <Description>Pick the Triple Triad rules yourself. Each rule (Open, Same, Plus, Random, Sudden Death, Same Wall, Elemental) can be forced on, forced off, or left to the region's own rules. You can also force the trade rule. Settings apply to every card game in every region. Requires the Steam 2013 English FF8_EN.exe.</Description>
-  <ReleaseNotes>Initial release.</ReleaseNotes>
+  <Version>1.1</Version>
+  <Description>Lifts FF8's list limits and lets you pick the Triple Triad rules. Each part is an option and can be switched off. All Magic: every character holds every spell at once (64 slots instead of 32), up to 100 each, and every magic screen pages through them. Unlimited GF Abilities: no 22-ability limit per GF; teach any number with items. Card rules: force each Triple Triad rule and the trade rule on or off in every region. Requires the Steam 2013 English FF8_EN.exe.</Description>
+  <ReleaseNotes>Combines Triple Triad Rule Select, Unlimited GF Abilities and All Magic Per Character into one mod with options. Page numbers past 9 show two digits.</ReleaseNotes>
   <ReleaseDate>2026-10-05</ReleaseDate>
-  <Category>Minigames</Category>
+  <Category>Gameplay</Category>
   <Link>https://github.com/BreDoyliesSea/FF8Mods-releases</Link>
   <DonationLink />
   <GameLanguage>EN</GameLanguage>
 
   <ConfigOption>
-    <Name>Open</Name>
+    <Name>All Magic Per Character</Name>
+    <ID>AllMagic</ID>
+    <Type>List</Type>
+    <Default>1</Default>
+    <Description>Every character can hold all spells, up to 100 each. The extra magic is stored in your save. Keep this on for saves made with it, or their magic will not load correctly.</Description>
+    <Option Value="1" Name="On" />
+    <Option Value="0" Name="Off" />
+  </ConfigOption>
+  <ConfigOption>
+    <Name>Unlimited GF Abilities</Name>
+    <ID>GFAbilities</ID>
+    <Type>List</Type>
+    <Default>1</Default>
+    <Description>No 22-ability limit per GF. GF ability lists get as many pages as they need.</Description>
+    <Option Value="1" Name="On" />
+    <Option Value="0" Name="Off" />
+  </ConfigOption>
+  <ConfigOption>
+    <Name>Card rule: Open</Name>
     <ID>RuleOpen</ID>
     <Type>List</Type>
     <Default>0</Default>
@@ -23,7 +41,7 @@
     <Option Value="2" Name="Always off" />
   </ConfigOption>
   <ConfigOption>
-    <Name>Same</Name>
+    <Name>Card rule: Same</Name>
     <ID>RuleSame</ID>
     <Type>List</Type>
     <Default>0</Default>
@@ -33,7 +51,7 @@
     <Option Value="2" Name="Always off" />
   </ConfigOption>
   <ConfigOption>
-    <Name>Plus</Name>
+    <Name>Card rule: Plus</Name>
     <ID>RulePlus</ID>
     <Type>List</Type>
     <Default>0</Default>
@@ -43,7 +61,7 @@
     <Option Value="2" Name="Always off" />
   </ConfigOption>
   <ConfigOption>
-    <Name>Random</Name>
+    <Name>Card rule: Random</Name>
     <ID>RuleRandom</ID>
     <Type>List</Type>
     <Default>0</Default>
@@ -53,7 +71,7 @@
     <Option Value="2" Name="Always off" />
   </ConfigOption>
   <ConfigOption>
-    <Name>Sudden Death</Name>
+    <Name>Card rule: Sudden Death</Name>
     <ID>RuleSuddenDeath</ID>
     <Type>List</Type>
     <Default>0</Default>
@@ -63,7 +81,7 @@
     <Option Value="2" Name="Always off" />
   </ConfigOption>
   <ConfigOption>
-    <Name>Same Wall</Name>
+    <Name>Card rule: Same Wall</Name>
     <ID>RuleSameWall</ID>
     <Type>List</Type>
     <Default>0</Default>
@@ -73,7 +91,7 @@
     <Option Value="2" Name="Always off" />
   </ConfigOption>
   <ConfigOption>
-    <Name>Elemental</Name>
+    <Name>Card rule: Elemental</Name>
     <ID>RuleElemental</ID>
     <Type>List</Type>
     <Default>0</Default>
@@ -83,7 +101,7 @@
     <Option Value="2" Name="Always off" />
   </ConfigOption>
   <ConfigOption>
-    <Name>Trade rule</Name>
+    <Name>Card rule: Trade</Name>
     <ID>TradeRule</ID>
     <Type>List</Type>
     <Default>0</Default>
@@ -96,97 +114,129 @@
     <Option Value="5" Name="None (no cards change hands)" />
   </ConfigOption>
 
-  <ModFolder Folder="options\Open_On">
+  <ModFolder Folder="options\AllMagic">
+    <ActiveWhen>
+      <Option>AllMagic=1</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\GFAbilities">
+    <ActiveWhen>
+      <Option>GFAbilities=1</Option>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\PageNumbers">
+    <ActiveWhen>
+      <Or>
+        <Option>AllMagic=1</Option>
+        <Option>GFAbilities=1</Option>
+      </Or>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\CardRules">
+    <ActiveWhen>
+      <Or>
+        <Not><Option>RuleOpen=0</Option></Not>
+        <Not><Option>RuleSame=0</Option></Not>
+        <Not><Option>RulePlus=0</Option></Not>
+        <Not><Option>RuleRandom=0</Option></Not>
+        <Not><Option>RuleSuddenDeath=0</Option></Not>
+        <Not><Option>RuleSameWall=0</Option></Not>
+        <Not><Option>RuleElemental=0</Option></Not>
+        <Not><Option>TradeRule=0</Option></Not>
+      </Or>
+    </ActiveWhen>
+  </ModFolder>
+  <ModFolder Folder="options\CardRules\options\Open_On">
     <ActiveWhen>
       <Option>RuleOpen=1</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Open_Off">
+  <ModFolder Folder="options\CardRules\options\Open_Off">
     <ActiveWhen>
       <Option>RuleOpen=2</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Same_On">
+  <ModFolder Folder="options\CardRules\options\Same_On">
     <ActiveWhen>
       <Option>RuleSame=1</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Same_Off">
+  <ModFolder Folder="options\CardRules\options\Same_Off">
     <ActiveWhen>
       <Option>RuleSame=2</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Plus_On">
+  <ModFolder Folder="options\CardRules\options\Plus_On">
     <ActiveWhen>
       <Option>RulePlus=1</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Plus_Off">
+  <ModFolder Folder="options\CardRules\options\Plus_Off">
     <ActiveWhen>
       <Option>RulePlus=2</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Random_On">
+  <ModFolder Folder="options\CardRules\options\Random_On">
     <ActiveWhen>
       <Option>RuleRandom=1</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Random_Off">
+  <ModFolder Folder="options\CardRules\options\Random_Off">
     <ActiveWhen>
       <Option>RuleRandom=2</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\SuddenDeath_On">
+  <ModFolder Folder="options\CardRules\options\SuddenDeath_On">
     <ActiveWhen>
       <Option>RuleSuddenDeath=1</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\SuddenDeath_Off">
+  <ModFolder Folder="options\CardRules\options\SuddenDeath_Off">
     <ActiveWhen>
       <Option>RuleSuddenDeath=2</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\SameWall_On">
+  <ModFolder Folder="options\CardRules\options\SameWall_On">
     <ActiveWhen>
       <Option>RuleSameWall=1</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\SameWall_Off">
+  <ModFolder Folder="options\CardRules\options\SameWall_Off">
     <ActiveWhen>
       <Option>RuleSameWall=2</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Elemental_On">
+  <ModFolder Folder="options\CardRules\options\Elemental_On">
     <ActiveWhen>
       <Option>RuleElemental=1</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Elemental_Off">
+  <ModFolder Folder="options\CardRules\options\Elemental_Off">
     <ActiveWhen>
       <Option>RuleElemental=2</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Trade_One">
+  <ModFolder Folder="options\CardRules\options\Trade_One">
     <ActiveWhen>
       <Option>TradeRule=1</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Trade_Diff">
+  <ModFolder Folder="options\CardRules\options\Trade_Diff">
     <ActiveWhen>
       <Option>TradeRule=2</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Trade_Direct">
+  <ModFolder Folder="options\CardRules\options\Trade_Direct">
     <ActiveWhen>
       <Option>TradeRule=3</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Trade_All">
+  <ModFolder Folder="options\CardRules\options\Trade_All">
     <ActiveWhen>
       <Option>TradeRule=4</Option>
     </ActiveWhen>
   </ModFolder>
-  <ModFolder Folder="options\Trade_None">
+  <ModFolder Folder="options\CardRules\options\Trade_None">
     <ActiveWhen>
       <Option>TradeRule=5</Option>
     </ActiveWhen>

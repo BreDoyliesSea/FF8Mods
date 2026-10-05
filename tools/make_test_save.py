@@ -17,7 +17,7 @@ Starting from the source save, it changes only:
 Then it recomputes the save checksum by running the game's own CRC routine (0x500310), writes
 the target slot, and signs it in metadata.xml (md5 of file + Steam user id).
 
-Needs the All Magic mod active to load the magic (vanilla would read garbage slots).
+Needs FF8 Unlimited's All Magic option on to load the magic (vanilla would read garbage slots).
 """
 import hashlib
 import os
@@ -187,7 +187,8 @@ def main():
 
     # check with the patched game code, then checksum with the game's CRC
     img = Image(exe)
-    for hext in ("UnlimitedGFAbilities/hext/gf_abilities.hext", "AllMagicPerCharacter/hext/magic.hext"):
+    for hext in ("FF8Unlimited/options/GFAbilities/hext/gf_abilities.hext",
+                 "FF8Unlimited/options/AllMagic/hext/magic.hext"):
         img.apply(parse_hext(open(os.path.join(ROOT, hext)).read()))
     e = Emu(img)
     e.wb(SAVEMAP, bytes(sm))

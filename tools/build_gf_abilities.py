@@ -32,7 +32,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from ff8hext import Hext, asm, hexbytes, Image, default_exe  # noqa: E402
 import frame  # noqa: E402
 
-ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "UnlimitedGFAbilities")
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "FF8Unlimited", "options", "GFAbilities")
 
 BUILDER = 0x4ACB70
 SOUND = 0x4B92A0          # play menu sound effect (cdecl, 1 arg)
@@ -356,13 +356,6 @@ ar_nor:
     pop ebx
     ret
 
-pnum2:                     ; replaces 4C0370 (page header "P.n", one digit): pages 10+ use
-    mov ecx, dword ptr [esp+0x18]   ; the game's two-digit version 4C02F0 (same arguments)
-    cmp ecx, 9
-    jae 0x4C02F0
-    sub esp, 0x10
-    jmp 0x4C0377
-
 gf_pnum:                   ; replaces 4D3C89: and ecx,0FFh  -> ecx = page + W/11
     movzx ecx, cl
     push eax
@@ -518,7 +511,6 @@ def collect(img):
     P.call(0x4D3CAA, L["gf_arrows"], "F6D91BC983C102", "GF menu: page arrows")
     P.call(0x4FCE2D, L["it_pnum"], "33C083C5288AC1", "item menu: page number")
     P.call(0x4FCE4F, L["it_arrows"], "F6D91BC983C102", "item menu: page arrows")
-    P.jmp(0x4C0370, L["pnum2"], "8B4C241883EC10", "page header: two digits from page 10")
 
     # data
     data = bytearray(DATA_END - CTX_GFM)
@@ -545,32 +537,7 @@ def build(exe=None):
     for a, b, note in patches:
         h.write(a, b, note)
     h.save(os.path.join(ROOT, "hext", "gf_abilities.hext"))
-    write_modxml()
     return code, L, patches
-
-
-def write_modxml():
-    from xml.sax.saxutils import escape as e
-    desc = ("Removes the 22-ability limit per GF. GFs can learn every ability they are taught, "
-            "and the GF menu, the item teach/forget list and the junction GF info popup page "
-            "through all of them (Left/Right). Requires the Steam 2013 English FF8_EN.exe.")
-    xml = """<?xml version="1.0" encoding="utf-8"?>
-<ModInfo>
-  <ID>9b7e3c21-5d4a-4f0e-8c6b-1a2f3e4d5c02</ID>
-  <Name>Unlimited GF Abilities</Name>
-  <Author>BreDoyliesSea</Author>
-  <Version>1.0</Version>
-  <Description>%s</Description>
-  <ReleaseNotes>Initial release.</ReleaseNotes>
-  <ReleaseDate>2026-10-05</ReleaseDate>
-  <Category>Gameplay</Category>
-  <Link>https://github.com/BreDoyliesSea/FF8Mods-releases</Link>
-  <DonationLink />
-  <GameLanguage>EN</GameLanguage>
-</ModInfo>
-""" % e(desc)
-    with open(os.path.join(ROOT, "mod.xml"), "w", newline="\r\n") as f:
-        f.write(xml)
 
 
 if __name__ == "__main__":

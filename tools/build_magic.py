@@ -32,7 +32,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from ff8hext import Hext, asm, Image, default_exe  # noqa: E402
 import magic_sites  # noqa: E402
 
-ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "AllMagicPerCharacter")
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "FF8Unlimited", "options", "AllMagic")
 
 # ---- the two relocated arrays ---------------------------------------------------------
 OLD_MAG0 = 0x1CFE0F8          # char0 magic slot0 (savemap + 0x4A0)
@@ -786,17 +786,12 @@ mlu_d:
     ret
 """
 
-# trampolines added by the builder (not in magic_sites). The persistence ones run the
-# pack/unpack cave routine around the savemap<->disk transfer. (addr, nbytes, body, expected original hex)
+# persistence trampolines added by the builder (not in magic_sites): each runs the pack/unpack
+# cave routine around the savemap<->disk transfer. (addr, nbytes, body, expected original hex)
 PERSIST_TRAMPS = [
     (0x4E2F29, 5, "call mag_save_pack; push 0x13A4", "68a4130000"),        # menu save
     (0x47F57F, 5, "call mag_save_pack; push 0x13A4", "68a4130000"),        # new-game write
     (0x4E4F23, 8, "add esp, 0xC; call mag_load_unpack; call 0x495EF0", "83c40ce8c50ffbff"),  # load
-    # Not persistence, same mechanism: the "P.n" page header (0x4C0370) draws one digit, so
-    # magic lists past page 9 showed "P.2" on page 12. Pages 10+ go to the game's own
-    # two-digit version (0x4C02F0, same arguments); 1-9 keep the vanilla layout.
-    (0x4C0370, 7, "mov ecx, dword ptr [esp + 0x18]; cmp ecx, 9; jae 0x4C02F0; sub esp, 0x10",
-     "8b4c241883ec10"),
 ]
 
 
@@ -918,34 +913,7 @@ def build(exe=None):
     for a, b, note in sorted(P.patches):
         h.write(a, b, note)
     h.save(os.path.join(ROOT, "hext", "magic.hext"))
-    write_modxml()
     return P, code, labels
-
-
-def write_modxml():
-    from xml.sax.saxutils import escape as e
-    desc = ("Every character can hold up to 64 different magic spells (so all spells in the game, "
-            "100 each) instead of the vanilla 32-slot limit. All menus, junction, draw/cast, refine "
-            "and party swaps page through the full list. Saves keep working: the extra magic is "
-            "stored in the save, and existing (pre-mod) saves are migrated on load. Requires the "
-            "Steam 2013 English FF8_EN.exe.")
-    xml = """<?xml version="1.0" encoding="utf-8"?>
-<ModInfo>
-  <ID>9b7e3c21-5d4a-4f0e-8c6b-1a2f3e4d5c03</ID>
-  <Name>All Magic Per Character</Name>
-  <Author>BreDoyliesSea</Author>
-  <Version>1.0</Version>
-  <Description>%s</Description>
-  <ReleaseNotes>Initial release.</ReleaseNotes>
-  <ReleaseDate>2026-10-05</ReleaseDate>
-  <Category>Gameplay</Category>
-  <Link>https://github.com/BreDoyliesSea/FF8Mods-releases</Link>
-  <DonationLink />
-  <GameLanguage>EN</GameLanguage>
-</ModInfo>
-""" % e(desc)
-    with open(os.path.join(ROOT, "mod.xml"), "w", newline="\r\n") as f:
-        f.write(xml)
 
 
 def main():

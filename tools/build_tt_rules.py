@@ -25,7 +25,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from ff8hext import Hext, asm, hexbytes  # noqa: E402
 
-ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "TripleTriadRuleSelect")
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "FF8Unlimited", "options", "CardRules")
 
 HOOK = 0x522652          # call 0x5349B0 inside the CARDGAME opcode
 HOOK_ORIG = bytes.fromhex("E859230100")
@@ -108,64 +108,7 @@ def build():
         hh.save(os.path.join(ROOT, folder, "hext", "tt_trade_%s.hext" % tag.lower()))
         folders.append((folder, "TradeRule=%d" % val))
 
-    write_modxml(folders)
-
-
-def write_modxml(folders):
-    from xml.sax.saxutils import escape as e
-    o = []
-    o.append('<?xml version="1.0" encoding="utf-8"?>')
-    o.append("<ModInfo>")
-    o.append("  <ID>4f1c2d9a-7b3e-4c51-9a8e-2d6f0b1e7a01</ID>")
-    o.append("  <Name>Triple Triad Rule Select</Name>")
-    o.append("  <Author>BreDoyliesSea</Author>")
-    o.append("  <Version>1.0</Version>")
-    o.append("  <Description>%s</Description>" % e(
-        "Pick the Triple Triad rules yourself. Each rule (Open, Same, Plus, Random, Sudden Death, "
-        "Same Wall, Elemental) can be forced on, forced off, or left to the region's own rules. "
-        "You can also force the trade rule. Settings apply to every card game in every region. "
-        "Requires the Steam 2013 English FF8_EN.exe."))
-    o.append("  <ReleaseNotes>Initial release.</ReleaseNotes>")
-    o.append("  <ReleaseDate>2026-10-05</ReleaseDate>")
-    o.append("  <Category>Minigames</Category>")
-    o.append("  <Link>https://github.com/BreDoyliesSea/FF8Mods-releases</Link>")
-    o.append("  <DonationLink />")
-    o.append("  <GameLanguage>EN</GameLanguage>")
-    o.append("")
-    # NOTE: no "header" ConfigOption here. A Bool option with no <Option> children makes
-    # Junction VIII 1.4.1's Configure window throw in set_SelectedOption when it auto-selects
-    # the first option. Every ConfigOption below is a List with explicit options + default.
-    for rid, name, _, desc in RULE_LIST:
-        o.append("  <ConfigOption>")
-        o.append("    <Name>%s</Name>" % e(name))
-        o.append("    <ID>Rule%s</ID>" % rid)
-        o.append("    <Type>List</Type>")
-        o.append("    <Default>0</Default>")
-        o.append("    <Description>%s</Description>" % e(desc))
-        o.append('    <Option Value="0" Name="Region default" />')
-        o.append('    <Option Value="1" Name="Always on" />')
-        o.append('    <Option Value="2" Name="Always off" />')
-        o.append("  </ConfigOption>")
-    o.append("  <ConfigOption>")
-    o.append("    <Name>Trade rule</Name>")
-    o.append("    <ID>TradeRule</ID>")
-    o.append("    <Type>List</Type>")
-    o.append("    <Default>0</Default>")
-    o.append("    <Description>Which cards change hands after a match.</Description>")
-    o.append('    <Option Value="0" Name="Region default" />')
-    for val, name, _, _ in TRADE_LIST:
-        o.append('    <Option Value="%d" Name="%s" />' % (val, e(name)))
-    o.append("  </ConfigOption>")
-    o.append("")
-    for folder, cond in folders:
-        o.append('  <ModFolder Folder="%s">' % folder.replace("/", "\\"))
-        o.append("    <ActiveWhen>")
-        o.append("      <Option>%s</Option>" % cond)
-        o.append("    </ActiveWhen>")
-        o.append("  </ModFolder>")
-    o.append("</ModInfo>")
-    with open(os.path.join(ROOT, "mod.xml"), "w", newline="\r\n") as f:
-        f.write("\n".join(o) + "\n")
+    return folders  # (folder relative to ROOT, ActiveWhen condition); mod.xml is written by build_mod.py
 
 
 if __name__ == "__main__":

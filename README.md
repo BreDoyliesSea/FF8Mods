@@ -1,16 +1,23 @@
-# FF8Mods
+# FF8 Unlimited
 
-Gameplay mods for **Final Fantasy VIII (2013 Steam release, English)**, packaged for
+A gameplay mod for **Final Fantasy VIII (2013 Steam release, English)**, packaged for
 [Junction VIII](https://github.com/tsunamods-codes/Junction-VIII), the mod manager for the
-original PC version (not the Remastered edition).
+original PC version (not the Remastered edition). It has three parts, each an option in
+Junction VIII's **Configure** screen:
 
-| Mod | Folder | Status |
+| Part | Option | Folder |
 |---|---|---|
-| Triple Triad Rule Select | `TripleTriadRuleSelect/` | Done. Logic checked by emulation; not yet play-tested |
-| Unlimited GF Abilities | `UnlimitedGFAbilities/` | Done. Logic checked by emulation; not yet play-tested |
-| All Magic Per Character | `AllMagicPerCharacter/` | Done. Logic checked by emulation; not yet play-tested |
+| All Magic Per Character | All Magic Per Character: On / Off | `FF8Unlimited/options/AllMagic` |
+| Unlimited GF Abilities | Unlimited GF Abilities: On / Off | `FF8Unlimited/options/GFAbilities` |
+| Triple Triad rule select | Card rule: Open ... Elemental, Card rule: Trade | `FF8Unlimited/options/CardRules` |
 
-All three mods can be active at the same time; they patch different addresses.
+A fourth folder, `options/PageNumbers`, draws two-digit page numbers ("P.12"). It loads when
+the magic or GF part is on. A part that is off loads nothing: the card-rule hook only loads
+when at least one rule or the trade rule is changed from "Region default". The parts patch
+different bytes, so any combination is safe (`tools/verify_mod.py` checks this).
+
+Releases are on [FF8Mods-releases](https://github.com/BreDoyliesSea/FF8Mods-releases). Version
+1.0 shipped the three parts as separate mods; 1.1 combines them.
 
 All patches are Junction VIII "hext" memory patches. They target exactly this executable:
 
@@ -22,17 +29,28 @@ Junction VIII's "4GB" (large-address-aware) copy of that EXE has the same code a
 so the patches work with it too. Other languages and the 2000 CD release use different
 addresses and are **not** supported.
 
-## Installing a mod
+## Installing
 
 1. Install and set up Junction VIII for your Steam copy of FF8.
-2. In Junction VIII choose **Import Mod**, then **From Folder**, and select the mod's
-   folder (for example `TripleTriadRuleSelect`).
-3. Activate the mod. Open its configuration to pick your settings, then press **Play**.
+2. Install **FF8 Unlimited** from **Browse Catalog**, or choose **Import Mod**, then
+   **From Folder**, and select the `FF8Unlimited` folder.
+3. Activate it, open **Configure** to pick your options, then press **Play**.
 
 If something seems off, use **Play With Debug Log**. Then look for
 `Loading hext patches` / `Applying hext patch` lines in `log.txt` in the game folder.
 
-## Triple Triad Rule Select
+## Memory used
+
+For other mod authors checking compatibility. Each part only writes these while it is on.
+
+| Part | Code | Data / patched code |
+|---|---|---|
+| All Magic | cave `0x24B6000-0x24B6572` (unused `.data`, made executable) | `0x24B5000-0x24B5B28`, `0x25D5000-0x25D7980` (unused `.data`); about 440 sites in `.text` that read or write magic |
+| GF Abilities | cave `0xB68940-0xB68C0E` (padding at the end of `.text`) | `0x400400-0x400860` (PE header tail); 46 sites |
+| Card rules | cave `0xB68E00-0xB68E3D` (padding at the end of `.text`) | hook at `0x522652` |
+| Page numbers | none | rewrites `0x4C0370-0x4C03D7` in place |
+
+## Card rules (Triple Triad)
 
 Choose, in Junction VIII's configuration screen, how each card rule behaves in **every**
 match in every region:
@@ -71,11 +89,9 @@ is currently learning.
 
 Notes:
 - Your save files keep the vanilla format, since learned abilities were always stored
-  as 128 bits per GF. If you later turn the mod off, a GF with more than 22 abilities
+  as 128 bits per GF. If you later turn this part off, a GF with more than 22 abilities
   keeps them all, but vanilla menus only list the first 22.
-- The game's page header ("P.n") draws a single digit, so from page 10 it showed only the
-  last digit. From page 10 it now uses the game's own two-digit header instead. The All Magic
-  mod includes the same fix, so either mod alone or both together show "P.12".
+- Page numbers past 9 ("P.12") come from the page-number fix described below.
 
 How it works: every ability list comes from one function (`0x4ACB70`), which stopped at
 22 entries. Teaching an item ability (`0x4FC6C0`) refused once a GF had 22. Both limits
@@ -105,13 +121,18 @@ auto-junction / exchange slot masks. All of this lives in a code cave and two ot
 Saves: the extra magic is persisted inside your normal save (no extra files). At save, each
 character's 64 slots are packed into a dense per-spell table that fits the now-unused vanilla
 32-slot region; at load it is unpacked. A signature byte marks mod saves, so **existing
-pre-mod saves still load** and their magic is migrated. A save made with the mod active needs
-the mod active to load correctly, and other tools (e.g. Hyne) won't understand the extra magic.
+pre-mod saves still load** and their magic is migrated. A save made with this part on needs
+it on to load its magic correctly, and other tools (e.g. Hyne) won't understand the extra magic.
 One cosmetic note: magic slot order is re-sorted by spell across a save/load.
 
-Page numbers past 9 ("P.12") use the game's own two-digit page header.
-
 Full details are in `tools/build_magic.py` and the reviewed site list in `tools/magic_sites.py`.
+
+## Page numbers
+
+The menus' "P.n" page header (`0x4C0370`) formats the page number into digit sprites but
+only draws the units digit, so page 12 showed "P.2". The game has a two-digit version
+(`0x4C02F0`, same arguments). The fix rewrites `0x4C0370` in place: pages 10 and up go to the
+two-digit version, and pages 1-9 draw exactly as before. See `tools/build_page_numbers.py`.
 
 ## Testing checklist (in game)
 
@@ -137,31 +158,38 @@ The emulation tests cover the game logic, but not what you see on screen. Please
 To set up items 2-5 quickly, `tools/make_test_save.py` turns an existing Steam save into a
 test save in another slot. It gives you Quezacotl (exactly 22 abilities) and Shiva (34 entries,
 learning one on page 4), puts 50 spells x100 on Squall, and adds ability-teaching items. Loading
-its magic needs the All Magic mod active.
+its magic needs the All Magic option on.
 
 If anything misbehaves, please send `log.txt` (from **Play With Debug Log**) and a short
 description.
 
 ## Rebuilding / verifying
 
-The hext files are generated. To change a mod, edit the builder, not the output.
+The hext files and `FF8Unlimited/mod.xml` are generated. To change a part, edit its builder,
+not the output.
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -r tools/requirements.txt
-.venv/bin/python tools/build_tt_rules.py
-.venv/bin/python tools/verify_tt_rules.py
-.venv/bin/python tools/build_gf_abilities.py
-.venv/bin/python tools/verify_gf_abilities.py
-.venv/bin/python tools/build_magic.py
+.venv/bin/python tools/build_mod.py
+.venv/bin/python tools/verify_mod.py
 .venv/bin/python tools/verify_magic.py
+.venv/bin/python tools/verify_gf_abilities.py
+.venv/bin/python tools/verify_tt_rules.py
+.venv/bin/python tools/package_catalog.py
 ```
 
-Each builder reads your `FF8_EN.exe`, checks the original bytes at every patch site, and
-refuses to build if anything differs (`build_magic.py` also refuses if any memory region it
-claims is not empty in your EXE).
+`build_mod.py` runs every part's builder (`build_magic.py`, `build_gf_abilities.py`,
+`build_tt_rules.py`, `build_page_numbers.py`) and writes `mod.xml`. Each builder reads your
+`FF8_EN.exe`, checks the original bytes at every patch site, and refuses to build if anything
+differs (`build_magic.py` also refuses if any memory region it claims is not empty in your EXE).
+`package_catalog.py` writes the release zip to `dist/` and the catalog entry to `catalog/`.
 
 The verifiers load your real `FF8_EN.exe`, apply the hext files exactly as Junction VIII's
 `HexPatch.cs` would, and run the patched code in the Unicorn CPU emulator. `verify_magic.py`
 exercises the rewritten add-magic / can-receive / battle-table / junction-swap routines and the
-save pack/unpack (including migrating a pre-mod save). They look for the EXE in the default
-Steam library path; set `FF8_EXE=/path/to/FF8_EN.exe` to point them somewhere else.
+save pack/unpack (including migrating a pre-mod save). `verify_mod.py` checks the mod.xml
+folders, that no two parts write the same bytes, and the page numbers. They look for the EXE in
+the default Steam library path; set `FF8_EXE=/path/to/FF8_EN.exe` to point them somewhere else.
+
+`tools/re/` holds the reverse-engineering helpers used to find the magic sites (static
+reference scans, function dumps, reachability), kept for reference.

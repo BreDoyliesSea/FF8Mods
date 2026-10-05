@@ -9,7 +9,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from ff8hext import Image, default_exe  # noqa: E402
-from emu import Emu, page_header_sprites, PAGE_HEADER_EXPECT  # noqa: E402
+from emu import Emu  # noqa: E402
 import build_magic as B  # noqa: E402
 
 NEWMAG, D = B.NEWMAG, B.D
@@ -270,13 +270,6 @@ def _(e):
         i = next(md.disasm(e.rb(addr, 16), addr))
         have = "%s %s" % (i.mnemonic, i.op_str)
         assert have == text, "%08X: %s (want %s)" % (addr, have, text)
-
-
-@check("page header draws two digits from page 10 (P.12, P.16)")
-def _(e):
-    for page, expect in PAGE_HEADER_EXPECT.items():
-        got = page_header_sprites(e, page)
-        assert got == expect, "page %d: %s" % (page + 1, got)
 
 
 def main():
