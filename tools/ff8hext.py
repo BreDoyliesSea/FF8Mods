@@ -12,6 +12,12 @@ import struct
 import keystone
 
 EXE_SHA1 = "03230c11328f8a1f9635435096e1659d9bfd002d"  # Steam 2013 FF8_EN.exe
+# Large-address-aware copies of the same EXE (only the PE header / padding differ; code and
+# data sections are byte-identical, so every patch address is the same):
+EXE_SHA1_ALSO = {
+    "3e6b9d8d70beb51c0208021cc3164ad804b7fa7f",  # Junction VIII's automatic 4GB patch
+    "269c12bc1e4a127f60abff47a525f87b503de615",  # NTCore 4GB patch
+}
 _ks = keystone.Ks(keystone.KS_ARCH_X86, keystone.KS_MODE_32)
 
 
@@ -113,7 +119,7 @@ class Image:
         import pefile
         raw = open(exe_path, "rb").read()
         sha = hashlib.sha1(raw).hexdigest()
-        if sha != EXE_SHA1:
+        if sha != EXE_SHA1 and sha not in EXE_SHA1_ALSO:
             raise SystemExit("Unexpected FF8_EN.exe (sha1 %s); these patches target the Steam 2013 English EXE" % sha)
         pe = pefile.PE(data=raw, fast_load=True)
         size = max(s.VirtualAddress + max(s.Misc_VirtualSize, s.SizeOfRawData) for s in pe.sections)

@@ -208,6 +208,70 @@ def _(e):
     assert e.call(0x4837E0, 0, 0) == 0xFF
 
 
+@check("every trampoline runs all of its instructions, then jumps back")
+def _(e):
+    # Regression: assemble_cave() once treated ';' in tramp bodies as a comment, so only the
+    # first instruction of each tramp was emitted (0x4959A0 then never set its loop counter).
+    from ff8hext import asm
+    tramps = [(s[0], s[2], s[3]) for s in B.magic_sites.SITES if s[1] == "tramp"]
+    tramps += [(a, n, body) for a, n, body, _ in B.PERSIST_TRAMPS]
+    for addr, nbytes, body in tramps:
+        start = LABELS["tr_%X" % addr]
+        pc = start
+        for part in [p.strip() for p in body.split(";") if p.strip()]:
+            text = B.subst(part)
+            import re
+            text = re.sub(r"\{(\w+)\}", lambda m: "0x%X" % LABELS[m.group(1)], text)
+            text = re.sub(r"\b(mag_\w+|fm_\w+|jm_\w+|aj_\w+)\b", lambda m: "0x%X" % LABELS[m.group(1)], text)
+            want = asm(text, pc)
+            have = e.rb(pc, len(want))
+            assert have == want, "tr_%X: %r at %08X: have %s want %s" % (addr, part, pc, have.hex(), want.hex())
+            pc += len(want)
+        back = asm("jmp 0x%X" % (addr + nbytes), pc)
+        assert e.rb(pc, len(back)) == back, "tr_%X: missing jmp back to %08X" % (addr, addr + nbytes)
+
+
+@check("battle copy 0x495960: copies 64 slots, stops at the table end (stale stack)")
+def _(e):
+    char, idx = 1, 2
+    clear_char(e, char)
+    for s in range(64):
+        set_mag(e, char, s, (s % 56) + 1, s + 1)
+    bm = B.BMAG + idx * 0x1D0
+    for i in range(0x1D0):
+        e.w8(bm + i, 0xEE)
+    sp = 0x10EF0000
+    e.wb(sp - 0x100, b"\xff" * 0x200)          # stale stack garbage (vanilla counter slot too)
+    e.w32(sp, 0x0FFF0000)
+    e.w32(sp + 4, char)
+    e.w32(sp + 8, idx)
+    stop = e.run_until(0x495960, {0x4959C7}, esp=sp, max_insns=20000)
+    assert stop == 0x4959C7, "copy loop did not finish (stopped at %s)" % stop
+    for s in range(64):
+        got = (e.r8(bm + s * 5), e.r8(bm + s * 5 + 1))
+        assert got == ((s % 56) + 1, s + 1), "slot %d: %s" % (s, got)
+    assert e.r8(bm + 64 * 5) == 0xEE, "copy ran past entry 64"
+
+
+@check("every magic list pages through 16 pages (64 slots / 4 rows)")
+def _(e):
+    import capstone
+    md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_32)
+    want = {
+        # previous page wraps to page 15, next page wraps after page 16
+        0x4D8691: "mov ecx, 0xf", 0x4D87CE: "cmp ecx, 0x10",                   # magic use list
+        0x4F2A56: "mov byte ptr [ebp + 0x42], 0xf", 0x4F2BE4: "cmp al, 0x10",  # main Magic menu
+        0x4F39BD: "mov eax, 0xf", 0x4F3BDA: "cmp eax, 0x10",                   # per-character list
+        0x4F4D20: "mov eax, 0xf", 0x4F4E99: "cmp eax, 0x10",                   # exchange list A
+        0x4F5227: "mov eax, 0xf", 0x4F53CD: "cmp eax, 0x10",                   # exchange list B
+        0x4DED46: "mov eax, 0xf", 0x4DF045: "cmp eax, 0x10",                   # junction spell list
+    }
+    for addr, text in want.items():
+        i = next(md.disasm(e.rb(addr, 16), addr))
+        have = "%s %s" % (i.mnemonic, i.op_str)
+        assert have == text, "%08X: %s (want %s)" % (addr, have, text)
+
+
 def main():
     global LABELS
     img, labels = patched_image()

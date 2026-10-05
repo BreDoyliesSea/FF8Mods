@@ -315,4 +315,9 @@ SITES = [
     #      also back up / restore the relocated magic
     (0x4CAA46, "patch", 7, "call {chars_backup}"),     # mov esi,0x1CFE0E8; rep movsd
     (0x4CADB2, "patch", 7, "call {chars_restore}"),    # mov edi,0x1CFE0E8; rep movsd
+
+    # ---- main Magic menu page turn on [ebp+0x42] (byte-register forms, found in play-testing:
+    #      the menu still stopped at 8 pages). Previous wraps to the last page, next after it.
+    (0x4F2A56, "x", 7, 0xF),          # mov byte ptr [ebp+0x42], 7
+    (0x4F2BE4, "x", 8, 0x10),         # cmp al, 8
 ]

@@ -132,6 +132,11 @@ The emulation tests cover the game logic, but not what you see on screen. Please
    and confirm every spell and quantity survived**. Load an older (pre-mod) save and check its
    existing magic is intact. Fight a battle, draw/cast, and confirm the counts carry back out.
 
+To set up items 2-5 quickly, `tools/make_test_save.py` turns an existing Steam save into a
+test save in another slot. It gives you Quezacotl (exactly 22 abilities) and Shiva (34 entries,
+learning one on page 4), puts 50 spells x100 on Squall, and adds ability-teaching items. Loading
+its magic needs the All Magic mod active.
+
 If anything misbehaves, please send `log.txt` (from **Play With Debug Log**) and a short
 description.
 

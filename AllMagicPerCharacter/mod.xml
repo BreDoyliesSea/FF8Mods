@@ -2,13 +2,13 @@
 <ModInfo>
   <ID>9b7e3c21-5d4a-4f0e-8c6b-1a2f3e4d5c03</ID>
   <Name>All Magic Per Character</Name>
-  <Author>FF8Mods</Author>
+  <Author>BreDoyliesSea</Author>
   <Version>1.0</Version>
   <Description>Every character can hold up to 64 different magic spells (so all spells in the game, 100 each) instead of the vanilla 32-slot limit. All menus, junction, draw/cast, refine and party swaps page through the full list. Saves keep working: the extra magic is stored in the save, and existing (pre-mod) saves are migrated on load. Requires the Steam 2013 English FF8_EN.exe.</Description>
   <ReleaseNotes>Initial release.</ReleaseNotes>
-  <ReleaseDate>2026-10-04</ReleaseDate>
+  <ReleaseDate>2026-10-05</ReleaseDate>
   <Category>Gameplay</Category>
-  <Link></Link>
+  <Link>https://github.com/BreDoyliesSea/FF8Mods-releases</Link>
   <DonationLink />
   <GameLanguage>EN</GameLanguage>
 </ModInfo>

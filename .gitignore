@@ -6,3 +6,6 @@ __pycache__/
 # Generated analysis artifacts
 tools/re/reach.pkl
 tools/re/fdump/
+
+# Release zips (tools/package_catalog.py)
+dist/

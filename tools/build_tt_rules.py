@@ -118,7 +118,7 @@ def write_modxml(folders):
     o.append("<ModInfo>")
     o.append("  <ID>4f1c2d9a-7b3e-4c51-9a8e-2d6f0b1e7a01</ID>")
     o.append("  <Name>Triple Triad Rule Select</Name>")
-    o.append("  <Author>FF8Mods</Author>")
+    o.append("  <Author>BreDoyliesSea</Author>")
     o.append("  <Version>1.0</Version>")
     o.append("  <Description>%s</Description>" % e(
         "Pick the Triple Triad rules yourself. Each rule (Open, Same, Plus, Random, Sudden Death, "
@@ -126,9 +126,9 @@ def write_modxml(folders):
         "You can also force the trade rule. Settings apply to every card game in every region. "
         "Requires the Steam 2013 English FF8_EN.exe."))
     o.append("  <ReleaseNotes>Initial release.</ReleaseNotes>")
-    o.append("  <ReleaseDate>2026-10-04</ReleaseDate>")
+    o.append("  <ReleaseDate>2026-10-05</ReleaseDate>")
     o.append("  <Category>Minigames</Category>")
-    o.append("  <Link></Link>")
+    o.append("  <Link>https://github.com/BreDoyliesSea/FF8Mods-releases</Link>")
     o.append("  <DonationLink />")
     o.append("  <GameLanguage>EN</GameLanguage>")
     o.append("")

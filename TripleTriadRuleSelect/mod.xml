@@ -2,13 +2,13 @@
 <ModInfo>
   <ID>4f1c2d9a-7b3e-4c51-9a8e-2d6f0b1e7a01</ID>
   <Name>Triple Triad Rule Select</Name>
-  <Author>FF8Mods</Author>
+  <Author>BreDoyliesSea</Author>
   <Version>1.0</Version>
   <Description>Pick the Triple Triad rules yourself. Each rule (Open, Same, Plus, Random, Sudden Death, Same Wall, Elemental) can be forced on, forced off, or left to the region's own rules. You can also force the trade rule. Settings apply to every card game in every region. Requires the Steam 2013 English FF8_EN.exe.</Description>
   <ReleaseNotes>Initial release.</ReleaseNotes>
-  <ReleaseDate>2026-10-04</ReleaseDate>
+  <ReleaseDate>2026-10-05</ReleaseDate>
   <Category>Minigames</Category>
-  <Link></Link>
+  <Link>https://github.com/BreDoyliesSea/FF8Mods-releases</Link>
   <DonationLink />
   <GameLanguage>EN</GameLanguage>
 

@@ -550,13 +550,13 @@ def write_modxml():
 <ModInfo>
   <ID>9b7e3c21-5d4a-4f0e-8c6b-1a2f3e4d5c02</ID>
   <Name>Unlimited GF Abilities</Name>
-  <Author>FF8Mods</Author>
+  <Author>BreDoyliesSea</Author>
   <Version>1.0</Version>
   <Description>%s</Description>
   <ReleaseNotes>Initial release.</ReleaseNotes>
-  <ReleaseDate>2026-10-04</ReleaseDate>
+  <ReleaseDate>2026-10-05</ReleaseDate>
   <Category>Gameplay</Category>
-  <Link></Link>
+  <Link>https://github.com/BreDoyliesSea/FF8Mods-releases</Link>
   <DonationLink />
   <GameLanguage>EN</GameLanguage>
 </ModInfo>

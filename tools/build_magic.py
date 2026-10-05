@@ -800,6 +800,9 @@ def cave_source(tramps):
     import re
     src = CAVE_FIXED + CAVE_HOOKS
     for addr, nbytes, body in tramps:
+        # Tramp bodies separate instructions with ';', but assemble_cave() treats ';' as the
+        # start of a comment, so put each instruction on its own line here.
+        body = "\n".join(part.strip() for part in body.split(";") if part.strip())
         src += "\ntr_%X:\n%s\njmp 0x%X\n" % (addr, body, addr + nbytes)
     src = subst(src)
     # any {name} left is an intra-cave label reference (e.g. a tramp calling fm_isfull);
@@ -925,13 +928,13 @@ def write_modxml():
 <ModInfo>
   <ID>9b7e3c21-5d4a-4f0e-8c6b-1a2f3e4d5c03</ID>
   <Name>All Magic Per Character</Name>
-  <Author>FF8Mods</Author>
+  <Author>BreDoyliesSea</Author>
   <Version>1.0</Version>
   <Description>%s</Description>
   <ReleaseNotes>Initial release.</ReleaseNotes>
-  <ReleaseDate>2026-10-04</ReleaseDate>
+  <ReleaseDate>2026-10-05</ReleaseDate>
   <Category>Gameplay</Category>
-  <Link></Link>
+  <Link>https://github.com/BreDoyliesSea/FF8Mods-releases</Link>
   <DonationLink />
   <GameLanguage>EN</GameLanguage>
 </ModInfo>
