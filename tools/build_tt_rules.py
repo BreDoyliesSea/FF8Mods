@@ -132,13 +132,9 @@ def write_modxml(folders):
     o.append("  <DonationLink />")
     o.append("  <GameLanguage>EN</GameLanguage>")
     o.append("")
-    o.append("  <ConfigOption>")
-    o.append("    <Name>=== Card rules</Name>")
-    o.append("    <ID>HeaderRules</ID>")
-    o.append("    <Type>Bool</Type>")
-    o.append("    <Default>0</Default>")
-    o.append("    <Description>Choose each rule's behaviour. Region default keeps the game's normal rules (including rule spreading).</Description>")
-    o.append("  </ConfigOption>")
+    # NOTE: no "header" ConfigOption here. A Bool option with no <Option> children makes
+    # Junction VIII 1.4.1's Configure window throw in set_SelectedOption when it auto-selects
+    # the first option. Every ConfigOption below is a List with explicit options + default.
     for rid, name, _, desc in RULE_LIST:
         o.append("  <ConfigOption>")
         o.append("    <Name>%s</Name>" % e(name))

@@ -13,13 +13,6 @@
   <GameLanguage>EN</GameLanguage>
 
   <ConfigOption>
-    <Name>=== Card rules</Name>
-    <ID>HeaderRules</ID>
-    <Type>Bool</Type>
-    <Default>0</Default>
-    <Description>Choose each rule's behaviour. Region default keeps the game's normal rules (including rule spreading).</Description>
-  </ConfigOption>
-  <ConfigOption>
     <Name>Open</Name>
     <ID>RuleOpen</ID>
     <Type>List</Type>
