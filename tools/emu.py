@@ -96,3 +96,29 @@ class Emu:
         self.mu.emu_start(start, 0, count=max_insns)
         self.stops = set()
         return self.stopped_at
+
+
+def page_header_sprites(e, page, x=100):
+    """Run the "P.n" page header (0x4C0370) for a 0-based page; return the (sprite, x) it draws."""
+    calls = []
+
+    def draw(em):          # 0x4B7210(ctx, prim, sprite, x, y, colour) -> next prim
+        esp = em.reg("esp")
+        a = [em.r32(esp + 4 + 4 * i) for i in range(4)]
+        calls.append((a[2] & 0xFF, a[3]))
+        return a[1]
+    e.stub(0x4B7210, ret=draw)
+    try:
+        e.call(0x4C0370, 0, SCRATCH, x, 0x38, 0, page)
+    finally:
+        del e.stubs[0x4B7210]
+    return calls
+
+
+# sprites: 0x32 = "P.", 0x28 + d = digit d
+PAGE_HEADER_EXPECT = {
+    1: [(0x32, 100), (0x2A, 109)],                    # "P.2", vanilla layout
+    8: [(0x32, 100), (0x31, 109)],                    # "P.9"
+    11: [(0x32, 100), (0x29, 109), (0x2A, 115)],      # "P.12"
+    15: [(0x32, 100), (0x29, 109), (0x2E, 115)],      # "P.16"
+}

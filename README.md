@@ -73,9 +73,9 @@ Notes:
 - Your save files keep the vanilla format, since learned abilities were always stored
   as 128 bits per GF. If you later turn the mod off, a GF with more than 22 abilities
   keeps them all, but vanilla menus only list the first 22.
-- Page numbers are drawn as one digit, so a GF with more than 99 entries (about 9
-  pages) would show a wrong digit on pages 10+. That is far more abilities than a GF can
-  realistically have.
+- The game's page header ("P.n") draws a single digit, so from page 10 it showed only the
+  last digit. From page 10 it now uses the game's own two-digit header instead. The All Magic
+  mod includes the same fix, so either mod alone or both together show "P.12".
 
 How it works: every ability list comes from one function (`0x4ACB70`), which stopped at
 22 entries. Teaching an item ability (`0x4FC6C0`) refused once a GF had 22. Both limits
@@ -108,6 +108,8 @@ character's 64 slots are packed into a dense per-spell table that fits the now-u
 pre-mod saves still load** and their magic is migrated. A save made with the mod active needs
 the mod active to load correctly, and other tools (e.g. Hyne) won't understand the extra magic.
 One cosmetic note: magic slot order is re-sorted by spell across a save/load.
+
+Page numbers past 9 ("P.12") use the game's own two-digit page header.
 
 Full details are in `tools/build_magic.py` and the reviewed site list in `tools/magic_sites.py`.
 

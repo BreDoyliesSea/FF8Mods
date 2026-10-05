@@ -786,12 +786,17 @@ mlu_d:
     ret
 """
 
-# persistence trampolines added by the builder (not in magic_sites): each runs the pack/unpack
-# cave routine around the savemap<->disk transfer. (addr, nbytes, body, expected original hex)
+# trampolines added by the builder (not in magic_sites). The persistence ones run the
+# pack/unpack cave routine around the savemap<->disk transfer. (addr, nbytes, body, expected original hex)
 PERSIST_TRAMPS = [
     (0x4E2F29, 5, "call mag_save_pack; push 0x13A4", "68a4130000"),        # menu save
     (0x47F57F, 5, "call mag_save_pack; push 0x13A4", "68a4130000"),        # new-game write
     (0x4E4F23, 8, "add esp, 0xC; call mag_load_unpack; call 0x495EF0", "83c40ce8c50ffbff"),  # load
+    # Not persistence, same mechanism: the "P.n" page header (0x4C0370) draws one digit, so
+    # magic lists past page 9 showed "P.2" on page 12. Pages 10+ go to the game's own
+    # two-digit version (0x4C02F0, same arguments); 1-9 keep the vanilla layout.
+    (0x4C0370, 7, "mov ecx, dword ptr [esp + 0x18]; cmp ecx, 9; jae 0x4C02F0; sub esp, 0x10",
+     "8b4c241883ec10"),
 ]
 
 

@@ -22,7 +22,7 @@ import capstone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_gf_abilities as B  # noqa: E402
-from emu import Emu  # noqa: E402
+from emu import Emu, page_header_sprites, PAGE_HEADER_EXPECT  # noqa: E402
 from ff8hext import Image, parse_hext, default_exe  # noqa: E402
 
 HEXT = os.path.join(os.path.normpath(B.ROOT), "hext", "gf_abilities.hext")
@@ -296,6 +296,14 @@ def test_item_teach(vanilla, patched, L):
         ok(r == expect and learned == expect, "item teach on a 51-entry GF: ret=%d learned=%d (expect %d)" % (r, learned, expect))
 
 
+def test_page_header(vanilla, patched):
+    for page, expect in PAGE_HEADER_EXPECT.items():
+        got = page_header_sprites(Emu(patched), page)
+        ok(got == expect, "page header for page %d: %s" % (page + 1, got))
+    # vanilla drops the tens digit, which is the bug this fixes
+    ok(page_header_sprites(Emu(vanilla), 11) == [(0x32, 100), (0x2A, 109)], "vanilla page 12 should draw only '2'")
+
+
 def main():
     exe = sys.argv[1] if len(sys.argv) > 1 else default_exe()
     vanilla, patched, ops = images(exe)
@@ -306,6 +314,7 @@ def main():
     test_junction_info(patched, L)
     test_frames(vanilla, patched)
     test_item_teach(vanilla, patched, L)
+    test_page_header(vanilla, patched)
     print("OK: %d checks passed" % checks)
 
 

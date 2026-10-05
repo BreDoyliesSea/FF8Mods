@@ -356,6 +356,13 @@ ar_nor:
     pop ebx
     ret
 
+pnum2:                     ; replaces 4C0370 (page header "P.n", one digit): pages 10+ use
+    mov ecx, dword ptr [esp+0x18]   ; the game's two-digit version 4C02F0 (same arguments)
+    cmp ecx, 9
+    jae 0x4C02F0
+    sub esp, 0x10
+    jmp 0x4C0377
+
 gf_pnum:                   ; replaces 4D3C89: and ecx,0FFh  -> ecx = page + W/11
     movzx ecx, cl
     push eax
@@ -511,6 +518,7 @@ def collect(img):
     P.call(0x4D3CAA, L["gf_arrows"], "F6D91BC983C102", "GF menu: page arrows")
     P.call(0x4FCE2D, L["it_pnum"], "33C083C5288AC1", "item menu: page number")
     P.call(0x4FCE4F, L["it_arrows"], "F6D91BC983C102", "item menu: page arrows")
+    P.jmp(0x4C0370, L["pnum2"], "8B4C241883EC10", "page header: two digits from page 10")
 
     # data
     data = bytearray(DATA_END - CTX_GFM)
