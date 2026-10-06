@@ -29,6 +29,21 @@ Junction VIII's "4GB" (large-address-aware) copy of that EXE has the same code a
 so the patches work with it too. Other languages and the 2000 CD release use different
 addresses and are **not** supported.
 
+## Compatibility with other mods
+
+`tools/compat_check.py` compares another mod's hext against FF8 Unlimited. Last run on
+**Cronos 0.7** and **FF8 Gameplay Customizer 0.5**:
+
+- Everything else in both mods, including NoMagicDepletion and the Draw options, patches
+  different bytes from ours and works alongside FF8 Unlimited.
+- Their **Junction value rework** option patches three instructions in the junction-stat code
+  that the All Magic part also patches (`0x4963CB`, `0x4966E5`, `0x496788`). Their patch has to
+  win, so FF8 Unlimited must sit **below** them in Junction VIII's mod list; `mod.xml` declares
+  this (`OrderConstraints`) and Junction VIII warns if the order is wrong.
+- Its **JunctionDependOfMinLevelQuantity** setting also reads spell quantities from the old
+  32-slot location, which the All Magic part no longer keeps current, so `mod.xml` forbids that
+  setting while All Magic is on (`Compatibility`). Cronos uses it by default.
+
 ## Installing
 
 1. Install and set up Junction VIII for your Steam copy of FF8.

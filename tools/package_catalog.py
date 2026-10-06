@@ -43,6 +43,8 @@ Lifts FF8's list limits and lets you pick the Triple Triad rules. Each part is a
 
 Page numbers past 9 show both digits (P.12).
 
+Works alongside Cronos and FF8 Gameplay Customizer: keep FF8 Unlimited below them in the mod list (Junction VIII warns if not). While All Magic is on, their Junction value rework option can't be set to JunctionDependOfMinLevelQuantity, which reads magic from the old 32-slot location; Vanilla and JunctionDependOfLevel work.
+
 Requires the Steam 2013 English release (FF8_EN.exe). Not for the Remastered edition, other languages or the 2000 release.
 
 Dev note - memory this mod uses (only while that part is on):

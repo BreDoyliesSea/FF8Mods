@@ -26,10 +26,12 @@ import build_tt_rules  # noqa: E402
 MOD = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "FF8Unlimited"))
 ID = "6ed51118-e60c-4087-8626-e9e9b6acd886"
 NAME = "FF8 Unlimited"
-VERSION = "1.1"
-RELEASE_DATE = "2026-10-05"
-RELEASE_NOTES = ("Combines Triple Triad Rule Select, Unlimited GF Abilities and All Magic Per Character "
-                 "into one mod with options. Page numbers past 9 show two digits.")
+VERSION = "1.2"
+RELEASE_DATE = "2026-10-06"
+RELEASE_NOTES = ("1.2: works alongside Cronos and FF8 Gameplay Customizer: load order and their "
+                 "Junction value rework option are checked by Junction VIII. "
+                 "1.1: combines Triple Triad Rule Select, Unlimited GF Abilities and All Magic Per "
+                 "Character into one mod with options. Page numbers past 9 show two digits.")
 LINK = "https://github.com/BreDoyliesSea/FF8Mods-releases"
 
 DESCRIPTION = (
@@ -47,6 +49,31 @@ ON_OFF = [
     ("GFAbilities", "Unlimited GF Abilities",
      "No 22-ability limit per GF. GF ability lists get as many pages as they need."),
 ]
+
+
+# Other catalog mods that patch the same code (checked with tools/compat_check.py).
+# Their "Junction value rework" options replace three instructions that the All Magic part also
+# patches (0x4963CB, 0x4966E5, 0x496788); whichever loads last wins, and only their whole
+# instruction is safe, so FF8 Unlimited must load first: below them in the list (JV8 applies
+# hext bottom to top). Their JunctionDependOfMinLevelQuantity (value 2) also reads spell
+# quantities from the old 32-slot location, which the All Magic part no longer keeps current,
+# so that value is forbidden while All Magic is on.
+OTHER_MODS = [
+    ("260dd8f3-537a-4d34-b3d5-956cda71eac9", "Cronos"),
+    ("260dd8f3-537a-4d34-b3d5-956cda71eaca", "FF8 Gameplay Customizer"),
+]
+
+
+def compatibility():
+    o = ["  <OrderConstraints>"]
+    o += ["    <After>%s</After>" % mid for mid, _ in OTHER_MODS]
+    o += ["  </OrderConstraints>", "  <Compatibility>"]
+    for mid, name in OTHER_MODS:
+        o += ["    <Setting>", "      <MyID>AllMagic</MyID>", "      <MyValue>1</MyValue>",
+              "      <ModID>%s</ModID>" % mid, "      <TheirID>JunctionRework</TheirID>",
+              "      <Forbid>2</Forbid>", "    </Setting>"]
+    o += ["  </Compatibility>"]
+    return o
 
 
 def config_options():
@@ -91,7 +118,7 @@ def write_modxml(tt_folders):
          "  <GameLanguage>EN</GameLanguage>", ""]
     # No Bool options: Junction VIII 1.4.1's Configure window throws on a Bool option without
     # <Option> children, so every option is a List with explicit choices and a default.
-    o += config_options() + [""]
+    o += config_options() + [""] + compatibility() + [""]
     o += folder("options/AllMagic", [opt("AllMagic=1")])
     o += folder("options/GFAbilities", [opt("GFAbilities=1")])
     o += folder("options/PageNumbers", ["<Or>", "  " + opt("AllMagic=1"), "  " + opt("GFAbilities=1"), "</Or>"])
