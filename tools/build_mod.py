@@ -26,9 +26,10 @@ import build_tt_rules  # noqa: E402
 MOD = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "FF8Unlimited"))
 ID = "6ed51118-e60c-4087-8626-e9e9b6acd886"
 NAME = "FF8 Unlimited"
-VERSION = "1.2"
-RELEASE_DATE = "2026-10-06"
-RELEASE_NOTES = ("1.2: works alongside Cronos and FF8 Gameplay Customizer: load order and their "
+VERSION = "1.3"
+RELEASE_DATE = "2026-10-07"
+RELEASE_NOTES = ("1.3: released as a Junction VIII .iroj archive, so installing from the "
+                 "catalog works. 1.2: works alongside Cronos and FF8 Gameplay Customizer: load order and their "
                  "Junction value rework option are checked by Junction VIII. "
                  "1.1: combines Triple Triad Rule Select, Unlimited GF Abilities and All Magic Per "
                  "Character into one mod with options. Page numbers past 9 show two digits.")

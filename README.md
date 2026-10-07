@@ -197,7 +197,8 @@ python -m venv .venv && .venv/bin/pip install -r tools/requirements.txt
 `build_tt_rules.py`, `build_page_numbers.py`) and writes `mod.xml`. Each builder reads your
 `FF8_EN.exe`, checks the original bytes at every patch site, and refuses to build if anything
 differs (`build_magic.py` also refuses if any memory region it claims is not empty in your EXE).
-`package_catalog.py` writes the release zip to `dist/` and the catalog entry to `catalog/`.
+`package_catalog.py` writes the release `.iroj` (Junction VIII's archive format; the catalog cannot
+install a plain zip) to `dist/` and the catalog entry to `catalog/`.
 
 The verifiers load your real `FF8_EN.exe`, apply the hext files exactly as Junction VIII's
 `HexPatch.cs` would, and run the patched code in the Unicorn CPU emulator. `verify_magic.py`

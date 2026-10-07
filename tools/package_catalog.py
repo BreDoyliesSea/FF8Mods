@@ -2,8 +2,11 @@
 """Package the mod for a GitHub release and write their Junction VIII catalog entries.
 
 Writes:
-  dist/<Folder>-<version>.zip     mod.xml + hext/ (+ options/) at the zip root, which Junction VIII
-                                  extracts straight into its library (AppCore/Install.cs)
+  dist/<Folder>-<version>.iroj    the mod as a Junction VIII IRO archive (AppWrapper/IrosArc.cs).
+                                  A catalog download that starts with the IRO signature is copied
+                                  into the library as is (AppCore/Install.cs). A plain .zip is not
+                                  usable: Junction VIII 1.4.1 extracts zips with SharpCompress's
+                                  ExtractAllEntries, which fails on normal zip files.
   catalog/<Folder>/mod.xml        entry for tsunamods-codes/Junction-VIII-Catalogs (mods/<Folder>/)
 
 Run the builders first; this only packages what is in the mod folders.
@@ -11,7 +14,7 @@ Run the builders first; this only packages what is in the mod folders.
 import math
 import os
 import re
-import zipfile
+import struct
 from xml.sax.saxutils import escape
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -64,18 +67,58 @@ def tag(xml, name):
     return m.group(1).strip()
 
 
+IRO_SIG = 0x534F5249       # "IROS"
+IRO_VERSION = 0x10002      # IrosArc.MAX_VERSION: 64-bit file offsets
+
+
+def write_iro(path, files):
+    """files: [(archive name with backslashes, bytes)], stored uncompressed like IrosArc.Create."""
+    names = [n.encode("utf-16-le") for n, _ in files]
+    dsize = sum(len(n) + 20 for n in names)
+    pos = 16 + 4 + dsize
+    directory, blob = b"", b""
+    for (_, data), n in zip(files, names):
+        directory += struct.pack("<HH", len(n) + 20, len(n)) + n + struct.pack("<iqi", 0, pos, len(data))
+        pos += len(data)
+        blob += data
+    with open(path, "wb") as f:
+        f.write(struct.pack("<iiii", IRO_SIG, IRO_VERSION, 0, 16) + struct.pack("<i", len(files)) + directory + blob)
+
+
+def read_iro(path):
+    """Read back the way IrosArc's constructor and CheckValid do."""
+    d = open(path, "rb").read()
+    sig, ver, flags, directory = struct.unpack_from("<iiii", d)
+    assert sig == IRO_SIG and 0x10000 <= ver <= 0x10002 and flags == 0
+    n = struct.unpack_from("<i", d, directory)[0]
+    pos, out = directory + 4, {}
+    for _ in range(n):
+        ln, flen = struct.unpack_from("<HH", d, pos)
+        name = d[pos + 4:pos + 4 + flen].decode("utf-16-le")
+        fl, off, size = struct.unpack_from("<iqi", d, pos + 4 + flen)
+        assert fl == 0 and off + size <= len(d), name
+        out[name] = d[off:off + size]
+        pos += ln
+    return out
+
+
 def package(folder):
     src = os.path.join(ROOT, folder)
     xml = open(os.path.join(src, "mod.xml"), encoding="utf-8").read()
     version = tag(xml, "Version")
     os.makedirs(os.path.join(ROOT, "dist"), exist_ok=True)
-    out = os.path.join(ROOT, "dist", "%s-%s.zip" % (folder, version))
-    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
-        for dirpath, dirnames, filenames in os.walk(src):
-            dirnames.sort()
-            for f in sorted(filenames):
-                full = os.path.join(dirpath, f)
-                z.write(full, os.path.relpath(full, src).replace(os.sep, "/"))
+    out = os.path.join(ROOT, "dist", "%s-%s.iroj" % (folder, version))
+    files = []
+    for dirpath, dirnames, filenames in os.walk(src):
+        dirnames.sort()
+        for f in sorted(filenames):
+            full = os.path.join(dirpath, f)
+            # Junction VIII's packer names files relative to the mod folder, with backslashes;
+            # ModFolder lookups (Path.Combine(folder, "hext\\...")) depend on that form
+            files.append((os.path.relpath(full, src).replace(os.sep, "\\"), open(full, "rb").read()))
+    write_iro(out, files)
+    back = read_iro(out)
+    assert back == dict(files) and "mod.xml" in back, "IRO read-back differs"
     return xml, version, out
 
 
